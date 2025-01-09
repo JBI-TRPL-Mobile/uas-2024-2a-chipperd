@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:template_project/pages/home_page.dart';
-import 'package:template_project/pages/signup_page.dart';
+import 'home_page.dart';
+import 'sign_up_page.dart';
 import '../widgets/custom_button_sign.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/social_sign_in_buttons.dart';
-// Impor halaman Dashboard
 
 class SignInPage extends StatefulWidget {
   @override
@@ -25,11 +24,15 @@ class _SignInPageState extends State<SignInPage> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? storedEmail = prefs.getString('email');
       String? storedPassword = prefs.getString('password');
+      String? storedName = prefs.getString('name'); // Mendapatkan nama pengguna
 
       // Mengecek apakah email dan password yang dimasukkan sesuai dengan yang disimpan
       if (storedEmail == email && storedPassword == password) {
         print('Login successful');
-        // Navigasi ke halaman Dashboard setelah login berhasil
+        // Simpan nama pengguna ke SharedPreferences
+        prefs.setString('currentUserName', storedName ?? '');
+
+        // Navigasi ke halaman Home setelah login berhasil
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
@@ -102,7 +105,7 @@ class _SignInPageState extends State<SignInPage> {
             ),
             const SizedBox(height: 16),
             const Row(
-              children:  [
+              children: [
                 Expanded(child: Divider(color: Colors.blueGrey)),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -122,7 +125,7 @@ class _SignInPageState extends State<SignInPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>  SignUpPage()),
+                      MaterialPageRoute(builder: (context) => SignUpPage()),
                     );
                   },
                   child: const Text(

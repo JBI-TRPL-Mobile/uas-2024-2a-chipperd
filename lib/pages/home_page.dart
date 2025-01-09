@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'message_page.dart';
+import '../pages/message_page.dart';
 import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,7 +9,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String userName = 'User';
+  String _userName = '';
 
   @override
   void initState() {
@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userName = prefs.getString('name') ?? 'User';
+      _userName = prefs.getString('currentUserName') ?? '';
     });
   }
 
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome $userName'),
+        title: Text('Welcome $_userName'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -191,3 +191,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
