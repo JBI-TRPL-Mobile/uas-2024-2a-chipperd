@@ -1,13 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:template_project/widgets/custom_button_sign_up.dart';
-import 'sign_up_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:template_project/pages/home_page.dart';
+import 'package:template_project/pages/signup_page.dart';
+import '../widgets/custom_button_sign.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/social_sign_in_buttons.dart';
-import '../state/auth_state.dart';
+// Impor halaman Dashboard
 
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
 
-class SignInPage extends StatelessWidget {
+class _SignInPageState extends State<SignInPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _signIn() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      // Mendapatkan data dari SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? storedEmail = prefs.getString('email');
+      String? storedPassword = prefs.getString('password');
+
+      // Mengecek apakah email dan password yang dimasukkan sesuai dengan yang disimpan
+      if (storedEmail == email && storedPassword == password) {
+        print('Login successful');
+        // Navigasi ke halaman Dashboard setelah login berhasil
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        print('Invalid email or password');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid email or password')),
+        );
+      }
+    } else {
+      print('Email or Password is empty');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter both email and password')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,15 +75,15 @@ class SignInPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             CustomTextField(
+              controller: _emailController,
               labelText: 'Enter Email',
-              onChanged: (value) => context.read<AuthState>().email = value,
             ),
             const SizedBox(height: 16),
             CustomTextField(
+              controller: _passwordController,
               labelText: 'Password',
               obscureText: true,
               hasSuffixIcon: true,
-              onChanged: (value) => context.read<AuthState>().password = value,
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -58,13 +98,11 @@ class SignInPage extends StatelessWidget {
             const SizedBox(height: 16),
             CustomButton(
               text: 'Sign In',
-              onPressed: () {
-                context.read<AuthState>().signIn();
-              },
+              onPressed: _signIn,
             ),
             const SizedBox(height: 16),
-            Row(
-              children: const [
+            const Row(
+              children:  [
                 Expanded(child: Divider(color: Colors.blueGrey)),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -84,7 +122,7 @@ class SignInPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SignUpPage()),
+                      MaterialPageRoute(builder: (context) =>  SignUpPage()),
                     );
                   },
                   child: const Text(

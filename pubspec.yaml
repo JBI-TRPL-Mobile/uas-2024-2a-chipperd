@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.1.2
+  shared_preferences: ^2.0.16
 
     
 
@@ -57,5 +57,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # assets:
-    # - assets/images/logo.png
+
+  assets:
+    - lib/assets/images/google.png
+    - lib/assets/images/facebook.png
+
